@@ -1,28 +1,15 @@
-import { ArrowLeft, Check, Flame } from "lucide-react";
+import { ArrowLeft, Check, Flame, Mic } from "lucide-react";
 import { useState } from "react";
+import type { JarvisItem, StressAnalysis } from "@/components/jarvis-console";
 
 interface TasksViewProps {
   mode: "tasks" | "detox";
   onBack: () => void;
+  items: JarvisItem[];
+  stress?: StressAnalysis | null;
 }
 
-const taskSeed = [
-  { title: "Boire un verre d'eau", meta: "Habitude · 1 min" },
-  { title: "Faire une marche de 5 min.", meta: "Habitude · 5 min" },
-  { title: "Codage en C — module 3", meta: "Projet · 2 h" },
-  { title: "Traiter les emails", meta: "Projet · 30 min" },
-  { title: "Méditation post-stress", meta: "Substitution · 10 min" },
-];
-
-const detoxSeed = [
-  { title: "Aucun réseau social avant midi", meta: "Streak · 6 jours" },
-  { title: "Téléphone hors de la chambre", meta: "Streak · 12 jours" },
-  { title: "Une seule session de vidéo courte", meta: "Streak · 3 jours" },
-  { title: "Marche au lieu du scroll", meta: "Substitution suggérée" },
-];
-
-export function TasksView({ mode, onBack }: TasksViewProps) {
-  const items = mode === "tasks" ? taskSeed : detoxSeed;
+export function TasksView({ mode, onBack, items, stress }: TasksViewProps) {
   const [done, setDone] = useState<string[]>([]);
 
   const toggle = (title: string) =>
@@ -43,47 +30,60 @@ export function TasksView({ mode, onBack }: TasksViewProps) {
         </h1>
       </header>
 
-      {mode === "detox" && (
+      {mode === "detox" && stress && (
         <div className="mt-6 flex items-center gap-3 rounded-3xl border border-border bg-card px-4 py-4">
           <Flame className="h-5 w-5 text-muted-foreground" />
           <div>
-            <p className="text-sm text-foreground">Streak actuel : 12 jours</p>
-            <p className="text-xs text-muted-foreground">Record personnel : 45 jours</p>
+            <p className="text-sm text-foreground">Niveau de stress : {stress.level}%</p>
+            <p className="text-xs text-muted-foreground">{stress.summary}</p>
           </div>
         </div>
       )}
 
-      <ul className="mt-6 space-y-2">
-        {items.map((item) => {
-          const isDone = done.includes(item.title);
-          return (
-            <li key={item.title}>
-              <button
-                onClick={() => toggle(item.title)}
-                className="flex w-full items-center gap-4 rounded-3xl border border-border bg-card px-4 py-4 text-left transition-colors hover:bg-secondary/60"
-              >
-                <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                    isDone ? "border-ring bg-secondary" : "border-border"
-                  }`}
+      {items.length === 0 ? (
+        <div className="mt-10 flex flex-col items-center gap-3 rounded-3xl border border-dashed border-border px-6 py-12 text-center">
+          <Mic className="h-6 w-6 text-muted-foreground" />
+          <p className="text-sm text-foreground">
+            {mode === "tasks" ? "Aucune tâche pour l'instant" : "Aucune habitude suivie"}
+          </p>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Parlez à JARVIS depuis l'accueil : dites-lui ce que vous voulez faire aujourd'hui et il
+            construira cette liste pour vous.
+          </p>
+        </div>
+      ) : (
+        <ul className="mt-6 space-y-2">
+          {items.map((item) => {
+            const isDone = done.includes(item.title);
+            return (
+              <li key={item.title}>
+                <button
+                  onClick={() => toggle(item.title)}
+                  className="flex w-full items-center gap-4 rounded-3xl border border-border bg-card px-4 py-4 text-left transition-colors hover:bg-secondary/60"
                 >
-                  {isDone && <Check className="h-4 w-4 text-foreground" />}
-                </span>
-                <span className="min-w-0">
                   <span
-                    className={`block truncate text-sm ${
-                      isDone ? "text-muted-foreground line-through" : "text-foreground"
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                      isDone ? "border-ring bg-secondary" : "border-border"
                     }`}
                   >
-                    {item.title}
+                    {isDone && <Check className="h-4 w-4 text-foreground" />}
                   </span>
-                  <span className="block text-xs text-muted-foreground">{item.meta}</span>
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+                  <span className="min-w-0">
+                    <span
+                      className={`block truncate text-sm ${
+                        isDone ? "text-muted-foreground line-through" : "text-foreground"
+                      }`}
+                    >
+                      {item.title}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">{item.meta}</span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <p className="mt-auto pt-8 text-center text-[10px] tracking-[0.3em] text-muted-foreground">
         {done.length} / {items.length} COMPLÉTÉS
