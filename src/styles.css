@@ -122,9 +122,43 @@
   }
 }
 
+@keyframes orb-spin-rev {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes orb-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes orb-core {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.12);
+    filter: brightness(1.25);
+  }
+}
+
 @theme {
   --animate-orb-spin: orb-spin 14s linear infinite;
+  --animate-orb-spin-rev: orb-spin-rev 14s linear infinite;
   --animate-orb-float: orb-float 7s ease-in-out infinite;
+  --animate-orb-twinkle: orb-twinkle 3.4s ease-in-out infinite;
+  --animate-orb-core: orb-core 4s ease-in-out infinite;
 }
 
 
