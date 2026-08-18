@@ -1,9 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, User, ListChecks, Mic, ChevronRight } from "lucide-react";
+import { Menu, User, ListChecks, ChevronRight, Activity } from "lucide-react";
 import { Orb } from "@/components/orb";
 import { SideDrawer, type OrbColor, type OrbStyleKey } from "@/components/side-drawer";
 import { TasksView } from "@/components/tasks-view";
+import {
+  JarvisConsole,
+  type JarvisItem,
+  type JarvisStatus,
+  type StressAnalysis,
+} from "@/components/jarvis-console";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -12,13 +18,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Application mobile futuriste : orbe interactif personnalisable, suivi de projets et tâches, et programme de dopamine detox.",
+          "Application mobile futuriste : orbe interactif personnalisable, assistant vocal JARVIS qui crée vos tâches, et programme de dopamine detox.",
       },
       { property: "og:title", content: "JARVIS Orbe — Votre journée" },
       {
         property: "og:description",
         content:
-          "Orbe interactif personnalisable, projets et tâches, et réduction des mauvaises habitudes.",
+          "Parlez à JARVIS : il crée vos tâches, analyse votre stress et vous aide à réduire vos mauvaises habitudes.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -32,12 +38,25 @@ function Index() {
   const [color, setColor] = useState<OrbColor>("red");
   const [orbStyle, setOrbStyle] = useState<OrbStyleKey>("planetary");
   const [view, setView] = useState<"home" | "tasks" | "detox">("home");
-  const [listening, setListening] = useState(false);
+  const [status, setStatus] = useState<JarvisStatus>("idle");
+  const [tasks, setTasks] = useState<JarvisItem[]>([]);
+  const [detox, setDetox] = useState<JarvisItem[]>([]);
+  const [stress, setStress] = useState<StressAnalysis | null>(null);
+
+  const addUnique = (prev: JarvisItem[], next: JarvisItem[]) => {
+    const titles = new Set(prev.map((i) => i.title));
+    return [...prev, ...next.filter((i) => i.title && !titles.has(i.title))];
+  };
 
   if (view !== "home") {
     return (
       <main className="mx-auto min-h-screen w-full max-w-md bg-background">
-        <TasksView mode={view} onBack={() => setView("home")} />
+        <TasksView
+          mode={view}
+          onBack={() => setView("home")}
+          items={view === "tasks" ? tasks : detox}
+          stress={stress}
+        />
       </main>
     );
   }
@@ -75,9 +94,24 @@ function Index() {
           </button>
         </header>
 
-        <div className="flex flex-1 items-center justify-center py-10">
-          <Orb color={color} style={orbStyle} />
+        <div className="flex flex-1 items-center justify-center py-8">
+          <Orb color={color} style={orbStyle} active={status !== "idle"} />
         </div>
+
+        {stress && (
+          <button
+            onClick={() => setView("detox")}
+            className="mb-3 flex w-full items-center gap-3 rounded-3xl border border-border bg-card px-5 py-4 text-left"
+          >
+            <Activity className="h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="min-w-0">
+              <span className="block text-xs tracking-[0.14em] text-foreground">
+                STRESS : {stress.level}%
+              </span>
+              <span className="block truncate text-xs text-muted-foreground">{stress.summary}</span>
+            </span>
+          </button>
+        )}
 
         <button
           onClick={() => setView("tasks")}
@@ -86,24 +120,21 @@ function Index() {
           <ListChecks className="h-5 w-5 shrink-0 text-muted-foreground" />
           <span className="text-xs leading-snug tracking-[0.14em] text-foreground">
             ACCÉDER À MES PROJETS ET TÂCHES
+            <span className="mt-1 block text-[10px] tracking-normal text-muted-foreground">
+              {tasks.length} tâche{tasks.length > 1 ? "s" : ""} créée
+              {tasks.length > 1 ? "s" : ""} par JARVIS
+            </span>
           </span>
           <ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
         </button>
 
-        <div className="mt-8 flex flex-col items-center gap-2">
-          <button
-            onClick={() => setListening((l) => !l)}
-            aria-label="Activer le micro"
-            className={`flex h-11 w-11 items-center justify-center rounded-full border border-border transition-colors ${
-              listening ? "bg-secondary text-foreground animate-pulse" : "text-muted-foreground"
-            }`}
-          >
-            <Mic className="h-4 w-4" />
-          </button>
-          <span className="text-[10px] tracking-[0.3em] text-muted-foreground">
-            {listening ? "JARVIS ÉCOUTE…" : "JARVIS VOUS ÉCOUTE"}
-          </span>
-        </div>
+        <JarvisConsole
+          status={status}
+          onStatusChange={setStatus}
+          onTasks={(items) => setTasks((prev) => addUnique(prev, items))}
+          onDetox={(items) => setDetox((prev) => addUnique(prev, items))}
+          onStress={setStress}
+        />
       </div>
     </main>
   );
