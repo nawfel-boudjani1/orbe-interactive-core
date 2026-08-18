@@ -51,14 +51,18 @@ export function Orb({ color, style }: OrbProps) {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="absolute inset-0 rounded-full border animate-orb-spin"
-              style={{
-                borderColor: "color-mix(in oklab, var(--orb) 45%, transparent)",
-                transform: `rotateX(74deg) rotateZ(${i * 55}deg) scale(${1 - i * 0.16})`,
-                animationDuration: `${9 + i * 4}s`,
-                boxShadow: "0 0 24px color-mix(in oklab, var(--orb) 35%, transparent)",
-              }}
-            />
+              className="absolute inset-0"
+              style={{ transform: `rotateX(74deg) rotateZ(${i * 55}deg) scale(${1 - i * 0.16})` }}
+            >
+              <div
+                className="h-full w-full rounded-full border animate-orb-spin"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--orb) 45%, transparent)",
+                  animationDuration: `${9 + i * 4}s`,
+                  boxShadow: "0 0 24px color-mix(in oklab, var(--orb) 35%, transparent)",
+                }}
+              />
+            </div>
           ))}
         </div>
       )}
