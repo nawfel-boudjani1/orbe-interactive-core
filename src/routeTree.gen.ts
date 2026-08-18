@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiJarvisRouteImport } from './routes/api/jarvis'
+import { Route as ApiSpeakRouteImport } from './routes/api/speak'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const ApiJarvisRoute = ApiJarvisRouteImport.update({
   path: '/api/jarvis',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSpeakRoute = ApiSpeakRouteImport.update({
+  id: '/api/speak',
+  path: '/api/speak',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
   id: '/api/transcribe',
   path: '/api/transcribe',
@@ -32,30 +38,34 @@ const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/jarvis': typeof ApiJarvisRoute
+  '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/jarvis': typeof ApiJarvisRoute
+  '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/jarvis': typeof ApiJarvisRoute
+  '/api/speak': typeof ApiSpeakRoute
   '/api/transcribe': typeof ApiTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/jarvis' | '/api/transcribe'
+  fullPaths: '/' | '/api/jarvis' | '/api/speak' | '/api/transcribe'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/jarvis' | '/api/transcribe'
-  id: '__root__' | '/' | '/api/jarvis' | '/api/transcribe'
+  to: '/' | '/api/jarvis' | '/api/speak' | '/api/transcribe'
+  id: '__root__' | '/' | '/api/jarvis' | '/api/speak' | '/api/transcribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiJarvisRoute: typeof ApiJarvisRoute
+  ApiSpeakRoute: typeof ApiSpeakRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJarvisRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/speak': {
+      id: '/api/speak'
+      path: '/api/speak'
+      fullPath: '/api/speak'
+      preLoaderRoute: typeof ApiSpeakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/transcribe': {
       id: '/api/transcribe'
       path: '/api/transcribe'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiJarvisRoute: ApiJarvisRoute,
+  ApiSpeakRoute: ApiSpeakRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
