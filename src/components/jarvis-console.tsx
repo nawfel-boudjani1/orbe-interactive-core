@@ -36,6 +36,7 @@ export function JarvisConsole({
   onStatusChange,
 }: JarvisConsoleProps) {
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [pending, setPending] = useState<{ tasks: JarvisItem[]; detox: JarvisItem[] } | null>(null);
   const recorder = useRef<{ stop: () => Promise<Blob> } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
 
