@@ -101,6 +101,7 @@
   --orb-blue: oklch(0.68 0.16 235);
   --orb-green: oklch(0.7 0.17 150);
   --orb-white: oklch(0.94 0.01 280);
+  --orb-accent: oklch(0.76 0.16 60);
 }
 
 @keyframes orb-spin {
