@@ -80,12 +80,17 @@ export const Route = createFileRoute("/api/jarvis")({
           const parsed = JSON.parse(cleaned);
           return Response.json({
             reply: typeof parsed.reply === "string" ? parsed.reply : cleaned,
-            tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],
-            detox: Array.isArray(parsed.detox) ? parsed.detox : [],
+            proposedTasks: Array.isArray(parsed.proposedTasks) ? parsed.proposedTasks : [],
+            proposedDetox: Array.isArray(parsed.proposedDetox) ? parsed.proposedDetox : [],
             stress: parsed.stress ?? null,
           });
         } catch {
-          return Response.json({ reply: cleaned, tasks: [], detox: [], stress: null });
+          return Response.json({
+            reply: cleaned,
+            proposedTasks: [],
+            proposedDetox: [],
+            stress: null,
+          });
         }
       },
     },
