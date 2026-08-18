@@ -24,7 +24,7 @@ Réponds TOUJOURS uniquement avec un objet JSON valide, sans texte autour, sans 
 - Propose peu à la fois (1 à 3 éléments max) pour ne pas surcharger l'utilisateur.
 - "stress" : un niveau de 0 à 100 uniquement si l'utilisateur a parlé de son état/moral, sinon null.
 - Si l'utilisateur vient de valider une proposition, remercie-le brièvement et ne re-propose pas la même chose.
-- Si tu ne sais pas comment il va, demande-le lui gentiment.
+- Si tu ne sais pas comment il va, demande-le lui gentiment.`;
 
 export const Route = createFileRoute("/api/jarvis")({
   server: {
