@@ -36,7 +36,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [portalOpen, setPortalOpen] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
   const [color, setColor] = useState<OrbColor>("red");
   const [orbStyle, setOrbStyle] = useState<OrbStyleKey>("planetary");
   const [view, setView] = useState<"home" | "tasks" | "detox">("home");
@@ -97,13 +97,14 @@ function Index() {
         </header>
 
         <div className="flex flex-1 items-center justify-center py-8">
-          <button
-            onClick={() => setPortalOpen(true)}
-            aria-label="Ouvrir JARVIS 3D"
-            className="border-0 bg-transparent p-0 outline-none"
-          >
+          <div className="relative">
             <Orb color={color} style={orbStyle} active={status !== "idle"} />
-          </button>
+            <button
+              onClick={() => setIsPortalOpen(true)}
+              aria-label="Ouvrir JARVIS 3D"
+              className="absolute inset-0 bg-transparent border-0 cursor-pointer w-full h-full z-20 focus:outline-none"
+            />
+          </div>
         </div>
 
         {stress && (
@@ -139,13 +140,13 @@ function Index() {
         <JarvisConsole
           status={status}
           onStatusChange={setStatus}
-          onTasks={(items) => setTasks((prev) => addUnique(prev, items))}
-          onDetox={(items) => setDetox((prev) => addUnique(prev, items))}
+          onConfirmTasks={(items) => setTasks((prev) => addUnique(prev, items))}
+          onConfirmDetox={(items) => setDetox((prev) => addUnique(prev, items))}
           onStress={setStress}
         />
       </div>
 
-      <JarvisPortal color={color} open={portalOpen} onClose={() => setPortalOpen(false)} />
+      <JarvisPortal color={color} open={isPortalOpen} onClose={() => setIsPortalOpen(false)} />
     </main>
   );
 }
