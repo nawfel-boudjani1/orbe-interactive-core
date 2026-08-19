@@ -144,6 +144,8 @@ function Index() {
           onStress={setStress}
         />
       </div>
+
+      <JarvisPortal color={color} open={portalOpen} onClose={() => setPortalOpen(false)} />
     </main>
   );
 }
