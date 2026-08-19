@@ -35,6 +35,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [portalOpen, setPortalOpen] = useState(false);
   const [color, setColor] = useState<OrbColor>("red");
   const [orbStyle, setOrbStyle] = useState<OrbStyleKey>("planetary");
   const [view, setView] = useState<"home" | "tasks" | "detox">("home");
