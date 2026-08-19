@@ -16,8 +16,8 @@ export interface StressAnalysis {
 export type JarvisStatus = "idle" | "listening" | "thinking" | "speaking";
 
 interface JarvisConsoleProps {
-  onTasks: (items: JarvisItem[]) => void;
-  onDetox: (items: JarvisItem[]) => void;
+  onConfirmTasks: (items: JarvisItem[]) => void;
+  onConfirmDetox: (items: JarvisItem[]) => void;
   onStress: (s: StressAnalysis) => void;
   status: JarvisStatus;
   onStatusChange: (s: JarvisStatus) => void;
@@ -29,14 +29,14 @@ interface Turn {
 }
 
 export function JarvisConsole({
-  onTasks,
-  onDetox,
+  onConfirmTasks,
+  onConfirmDetox,
   onStress,
   status,
   onStatusChange,
 }: JarvisConsoleProps) {
   const [turns, setTurns] = useState<Turn[]>([]);
-  const [pending, setPending] = useState<{ tasks: JarvisItem[]; detox: JarvisItem[] } | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ tasks: JarvisItem[]; detox: JarvisItem[] } | null>(null);
   const recorder = useRef<{ stop: () => Promise<Blob> } | null>(null);
   const audio = useRef<HTMLAudioElement | null>(null);
 
@@ -97,7 +97,7 @@ export function JarvisConsole({
       setTurns([...history, { role: "assistant", content: reply }]);
       const pTasks = data.proposedTasks ?? [];
       const pDetox = data.proposedDetox ?? [];
-      if (pTasks.length || pDetox.length) setPending({ tasks: pTasks, detox: pDetox });
+      if (pTasks.length || pDetox.length) setPendingAction({ tasks: pTasks, detox: pDetox });
       if (data.stress && typeof data.stress.level === "number") onStress(data.stress);
       await speak(reply);
     } catch (e) {
