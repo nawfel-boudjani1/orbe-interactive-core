@@ -95,7 +95,13 @@ function Index() {
         </header>
 
         <div className="flex flex-1 items-center justify-center py-8">
-          <Orb color={color} style={orbStyle} active={status !== "idle"} />
+          <button
+            onClick={() => setPortalOpen(true)}
+            aria-label="Ouvrir JARVIS 3D"
+            className="border-0 bg-transparent p-0 outline-none"
+          >
+            <Orb color={color} style={orbStyle} active={status !== "idle"} />
+          </button>
         </div>
 
         {stress && (
