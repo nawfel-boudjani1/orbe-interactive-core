@@ -4,6 +4,7 @@ import { Menu, User, ListChecks, ChevronRight, Activity } from "lucide-react";
 import { Orb } from "@/components/orb";
 import { SideDrawer, type OrbColor, type OrbStyleKey } from "@/components/side-drawer";
 import { TasksView } from "@/components/tasks-view";
+import { JarvisPortal } from "@/components/jarvis-portal";
 import {
   JarvisConsole,
   type JarvisItem,
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [portalOpen, setPortalOpen] = useState(false);
   const [color, setColor] = useState<OrbColor>("red");
   const [orbStyle, setOrbStyle] = useState<OrbStyleKey>("planetary");
   const [view, setView] = useState<"home" | "tasks" | "detox">("home");
@@ -95,7 +97,13 @@ function Index() {
         </header>
 
         <div className="flex flex-1 items-center justify-center py-8">
-          <Orb color={color} style={orbStyle} active={status !== "idle"} />
+          <button
+            onClick={() => setPortalOpen(true)}
+            aria-label="Ouvrir JARVIS 3D"
+            className="border-0 bg-transparent p-0 outline-none"
+          >
+            <Orb color={color} style={orbStyle} active={status !== "idle"} />
+          </button>
         </div>
 
         {stress && (
@@ -136,6 +144,8 @@ function Index() {
           onStress={setStress}
         />
       </div>
+
+      <JarvisPortal color={color} open={portalOpen} onClose={() => setPortalOpen(false)} />
     </main>
   );
 }

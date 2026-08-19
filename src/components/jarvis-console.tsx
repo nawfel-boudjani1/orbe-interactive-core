@@ -86,8 +86,8 @@ export function JarvisConsole({
       });
       const data = (await res.json()) as {
         reply?: string;
-        tasks?: JarvisItem[];
-        detox?: JarvisItem[];
+        proposedTasks?: JarvisItem[];
+        proposedDetox?: JarvisItem[];
         stress?: StressAnalysis | null;
         error?: string;
       };
@@ -95,8 +95,9 @@ export function JarvisConsole({
 
       const reply = data.reply?.trim() || "Je n'ai pas bien saisi, pouvez-vous répéter ?";
       setTurns([...history, { role: "assistant", content: reply }]);
-      if (data.tasks?.length) onTasks(data.tasks);
-      if (data.detox?.length) onDetox(data.detox);
+      const pTasks = data.proposedTasks ?? [];
+      const pDetox = data.proposedDetox ?? [];
+      if (pTasks.length || pDetox.length) setPending({ tasks: pTasks, detox: pDetox });
       if (data.stress && typeof data.stress.level === "number") onStress(data.stress);
       await speak(reply);
     } catch (e) {
@@ -165,6 +166,43 @@ export function JarvisConsole({
               </p>
             </div>
           ))}
+        </div>
+      )}
+
+      {pending && (pending.tasks.length > 0 || pending.detox.length > 0) && (
+        <div className="w-full rounded-3xl border border-border bg-card p-4">
+          <p className="text-[10px] tracking-[0.25em] text-muted-foreground">
+            PROPOSITION DE JARVIS
+          </p>
+          <ul className="mt-3 space-y-2">
+            {[...pending.tasks, ...pending.detox].map((item) => (
+              <li key={item.title} className="text-sm text-foreground">
+                • {item.title}
+                {item.meta && (
+                  <span className="ml-2 text-xs text-muted-foreground">{item.meta}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex gap-2">
+            <button
+              onClick={() => {
+                if (pending.tasks.length) onTasks(pending.tasks);
+                if (pending.detox.length) onDetox(pending.detox);
+                setPending(null);
+                toast.success("Ajouté par JARVIS.");
+              }}
+              className="flex-1 rounded-full border border-ring bg-secondary px-4 py-2 text-xs tracking-[0.14em] text-foreground"
+            >
+              OUI, AJOUTE
+            </button>
+            <button
+              onClick={() => setPending(null)}
+              className="flex-1 rounded-full border border-border px-4 py-2 text-xs tracking-[0.14em] text-muted-foreground"
+            >
+              NON MERCI
+            </button>
+          </div>
         </div>
       )}
 
