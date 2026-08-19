@@ -4,6 +4,7 @@ import { Menu, User, ListChecks, ChevronRight, Activity } from "lucide-react";
 import { Orb } from "@/components/orb";
 import { SideDrawer, type OrbColor, type OrbStyleKey } from "@/components/side-drawer";
 import { TasksView } from "@/components/tasks-view";
+import { JarvisPortal } from "@/components/jarvis-portal";
 import {
   JarvisConsole,
   type JarvisItem,
