@@ -86,8 +86,8 @@ export function JarvisConsole({
       });
       const data = (await res.json()) as {
         reply?: string;
-        tasks?: JarvisItem[];
-        detox?: JarvisItem[];
+        proposedTasks?: JarvisItem[];
+        proposedDetox?: JarvisItem[];
         stress?: StressAnalysis | null;
         error?: string;
       };
@@ -95,8 +95,9 @@ export function JarvisConsole({
 
       const reply = data.reply?.trim() || "Je n'ai pas bien saisi, pouvez-vous répéter ?";
       setTurns([...history, { role: "assistant", content: reply }]);
-      if (data.tasks?.length) onTasks(data.tasks);
-      if (data.detox?.length) onDetox(data.detox);
+      const pTasks = data.proposedTasks ?? [];
+      const pDetox = data.proposedDetox ?? [];
+      if (pTasks.length || pDetox.length) setPending({ tasks: pTasks, detox: pDetox });
       if (data.stress && typeof data.stress.level === "number") onStress(data.stress);
       await speak(reply);
     } catch (e) {
